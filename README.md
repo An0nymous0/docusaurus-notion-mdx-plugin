@@ -48,7 +48,7 @@ plugins: [
 ### How to obtain the database ID.
 > First, determine the id of your root page by clicking "Share" and looking at the url it gives you. E.g.
 https://www.notion.so/max-gao/ex0b17d232e34a81sdf72197c041108f
-means that the id is "0456aa5842946PRETEND4f37c97a0e5".
+means that the id is "ex0b17d232e34a81sdf72197c041108f".
 
 ### lastSyncTime Field Description
 This field represents the data you want to synchronize from this day onwards. Each subsequent run of the project will automatically update it. The corresponding field in the database is the last modified time, so any updated articles will also be synchronized here.
