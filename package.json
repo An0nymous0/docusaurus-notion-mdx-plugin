@@ -1,0 +1,32 @@
+{
+  "name": "docusaurus-notion-mdx-plugin",
+  "private": false,
+  "version": "0.1.3",
+  "type": "module",
+  "main": "dist/docusaurus-notion-mdx-plugin.umd.cjs",
+  "files": [
+    "dist/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/An0nymous0/docusaurus-notion-mdx-plugin"
+  },
+  "bugs": {
+    "url": "https://github.com/An0nymous0/docusaurus-notion-mdx-plugin/issues",
+    "email": "a398058068@gmail.com"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@docusaurus/types": "^3.0.1",
+    "@notionhq/client": "^2.2.14",
+    "@types/node": "^20.10.4"
+  }
+}
