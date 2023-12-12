@@ -76,5 +76,8 @@ View the files generated in the `Docs` directory.
 
 Every time you run the project, the page will be updated. If you are using a CI system (such as Github Actions) for deployment, you can exclude submitting the page file.
 
+# TODO
+- [ ] Reverse delete
+- [ ] Image Resources Sync
 
 # Please begin to enjoy
