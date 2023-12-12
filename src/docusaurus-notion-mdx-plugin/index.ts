@@ -14,7 +14,6 @@ export default function pluginDocusaurusNotionMDXPlugin(
         name: "docusaurus-notion-mdx-plugin",
         async loadContent() {},
         async contentLoaded({ content, actions }) {
-            console.log(options.notionAuth)
             const notion = new Client({ auth: options.notionAuth })
             // Get pages from Notion
             const response = await notion.databases.query({
@@ -47,7 +46,6 @@ export default function pluginDocusaurusNotionMDXPlugin(
                     block_id: pageId
                 })
                 const pageDocsPath = page.properties["DN - Docs classification"]?.select?.name
-                console.log("projectroot:",getProjectRoot())
                 const docsDir = path.join(getProjectRoot(), "docs", ...pageDocsPath?pageDocsPath.split("/"):"/")
 
                 mkdirSyncRecursive(docsDir);
@@ -131,7 +129,6 @@ function generateMDXContent(blocks) {
             // @ts-ignore
             mdx += "> " + block.quote.rich_text.map(t => t.plain_text).join("") + "\n"
         } else if (block.type == "code") {
-            console.log(block.code.language)
             // @ts-ignore
             mdx += "\n```"+block.code.language+"\n" + block.code.rich_text.map(t => t.plain_text).join("\n") + "\n```\n"
         }
@@ -149,7 +146,7 @@ function updatePluginLastSyncTime(content, actions) {
 
     // Update the lastSyncTime configuration
     configCode = configCode.replace(
-        /lastSyncTime:"\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}"/,
+        /lastSyncTime:"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z"/,
         `lastSyncTime:"${new Date().toISOString()}"`
     )
 
