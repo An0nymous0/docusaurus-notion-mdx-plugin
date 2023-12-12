@@ -23,7 +23,7 @@ In order for docusaurus-notion-mdx-plugin to read your site via Notion's API, yo
 
 Go to the page that will be the root of your site. This page should have, as direct children, your "Outline" (required) and "Database" (optional) pages. Follow [these instructions](https://developers.notion.com/docs/create-a-notion-integration#give-your-integration-page-permissions).
 
-![1702293207751.jpg](public%2F1702293207751.jpg)
+![1702293207751.jpg](public%2Freadme%2F1702293207751.jpg)
 
 ## 4. Set up your documentation site.
 
