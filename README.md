@@ -34,7 +34,7 @@ npm i docusaurus-notion-mdx-plugin
 
 ## 5. Modify the **docusaurus.config.js** file to configure plugins.
 ```json
-plugins: [
+  plugins: [
     .......,
     ['docusaurus-notion-mdx-plugin',
       {
