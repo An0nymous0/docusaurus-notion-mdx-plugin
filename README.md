@@ -76,8 +76,25 @@ View the files generated in the `Docs` directory.
 
 Every time you run the project, the page will be updated. If you are using a CI system (such as Github Actions) for deployment, you can exclude submitting the page file.
 
+## Code blocks configuration
+> Some popular languages like Java, C#, or PHP are not enabled by default.
+[Supported Languages](https://docusaurus.io/docs/markdown-features/code-blocks#supported-languages)
+
+### tips
+The code block header in Docusaurus corresponds to the Caption in the notion code block
+
 # TODO
 - [ ] Reverse delete
 - [ ] Image Resources Sync
+- [ ] Elegant configuration _category_.json file
 
 # Please begin to enjoy
+
+# Release Nodes
+## Release 0.1.8 2023-12-12
+- Internal refactoring
+- Support for bold, underline, and other formatting.
+- Support hyperlinks in the block.
+- The unified directory structure is lowercase
+- Improve README.
+- Support code block title
