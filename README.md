@@ -4,7 +4,8 @@
 
 docusaurus-notion-mdx-plugin enables you to use Notion as the editor for [Docusaurus](https://docusaurus.io/). By using Notion instead of raw markdown files, you eliminate the need to teach non-developers how to make git commits and pull requests. This simplifies collaboration and editing between users with less technical proficiency. docusaurus-notion-mdx-plugin allows non-technical team members to contribute content in a more user-friendly manner without having to learn complex version control processes.
 
-Example Site: https://sillsdev.github.io/docu-notion-sample-site/
+Example Site: https://www.ga0x.com/docs/intro
+GitHub Example: https://github.com/An0nymous0/docusaurus-notion-mdx-plugin-example
 
 # Instructions
 
