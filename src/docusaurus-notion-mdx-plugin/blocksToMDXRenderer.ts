@@ -8,9 +8,13 @@ import {
     ToDoBlockObjectResponse,
     QuoteBlockObjectResponse,
     CodeBlockObjectResponse,
-    PartialBlockObjectResponse, BlockObjectResponse, RichTextItemResponse
+    PartialBlockObjectResponse,
+    BlockObjectResponse,
+    RichTextItemResponse,
+    ImageBlockObjectResponse
 } from '@notionhq/client/build/src/api-endpoints'
 import {fetchBlockChildren} from './notionClient.js';
+import {saveImageToFile} from "./fileUtils";
 
 export function renderParagraph(block: ParagraphBlockObjectResponse) {
     return renderUnderlyingFormatMDXList(block.paragraph.rich_text) + '\n\n';
@@ -63,18 +67,43 @@ export function renderQuote(block: QuoteBlockObjectResponse) {
 }
 
 export function renderCode(block: CodeBlockObjectResponse) {
-    let codeContent = "\n```"
-
-    codeContent += block.code.language
-    if (block.code.caption && block.code.caption.length > 0) {
-        codeContent += " " + "title=\"" + block.code.caption[0].plain_text + "\"" + "\n"
+    let codeContent = "";
+    const caption = block.code.caption;
+    // Handles special MDX syntax
+    if (caption && caption.length > 0 && caption[0].plain_text === '!mdx') {
+        codeContent += block.code.rich_text.map(t => t.plain_text).join("\n")
+        codeContent += "\n\n"
     } else {
-        codeContent + "\n"
-    }
-    codeContent += block.code.rich_text.map(t => t.plain_text).join("\n")
-    codeContent += "\n```\n"
+        codeContent = "\n```"
 
+        codeContent += block.code.language
+        if (caption && caption.length > 0) {
+            codeContent += " " + "title=\"" + caption[0].plain_text + "\"" + "\n"
+        } else {
+            codeContent += "\n"
+        }
+        codeContent += block.code.rich_text.map(t => t.plain_text).join("\n")
+        codeContent += "\n```\n"
+    }
     return codeContent
+}
+
+export async function renderImage(block: ImageBlockObjectResponse) {
+    let imageContent = '';
+
+    if (block.image.type === 'external') {
+        imageContent += `![${block.image.caption.length > 0 ? block.image.caption[0].plain_text : block.id}](${block.image.external.url})`;
+    } else {
+        // Local image
+        const imageFileName = `image_${block.id}.png`;
+
+        // Save image file to /docs/img/
+        await saveImageToFile('docs/assets/', imageFileName, block.image.file.url);
+
+        imageContent += `![${block.image.caption}](../assets/${imageFileName})`;
+    }
+
+    return imageContent + '\n';
 }
 
 export function renderUnderlyingFormatMDXList(richTextList: Array<RichTextItemResponse>) {
@@ -109,8 +138,7 @@ export function renderMDXContent(richText: RichTextItemResponse) {
     // renderHref
     if (richText.href) {
         if (richText.type === 'text') {
-            //@ts-ignore
-            mdx += `[${richText.plain_text}](${richText.text.link.url})`
+            mdx += `[${richText.plain_text}](${richText?.text?.link?.url})`
         }
     } else {
         mdx += richText.plain_text;
@@ -136,7 +164,6 @@ export function renderMDXContent(richText: RichTextItemResponse) {
 }
 
 export async function generateMDXContent(blocks: Array<PartialBlockObjectResponse | BlockObjectResponse>, indentLevel = 0) {
-    // console.log(JSON.stringify(blocks, null, 2));
     // Implementation from previous examples
     let mdx = ""
     for (const block of blocks) {
@@ -144,7 +171,7 @@ export async function generateMDXContent(blocks: Array<PartialBlockObjectRespons
             if (block.type == "paragraph") {
                 mdx += renderParagraph(block)
             } else if (block.type == "heading_1") {
-                mdx += renderHeading1(block)
+                mdx += await renderHeading1(block)
             } else if (block.type == "heading_2") {
                 mdx += renderHeading2(block)
             } else if (block.type == "heading_3") {
@@ -159,6 +186,10 @@ export async function generateMDXContent(blocks: Array<PartialBlockObjectRespons
                 mdx += renderQuote(block)
             } else if (block.type == "code") {
                 mdx += renderCode(block)
+            } else if (block.type == 'image') {
+                mdx += await renderImage(block)
+            } else {
+                console.warn("Unknown block type: " + JSON.stringify(block, null, 2))
             }
         }
     }

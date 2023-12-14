@@ -80,6 +80,10 @@ Every time you run the project, the page will be updated. If you are using a CI 
 > Some popular languages like Java, C#, or PHP are not enabled by default.
 [Supported Languages](https://docusaurus.io/docs/markdown-features/code-blocks#supported-languages)
 
+## The MDX example
+[The MDX example](https://max-gao.notion.site/Markdown-Features-d1c76d4c850d489598def9745d083156)
+
+
 ### tips
 The code block header in Docusaurus corresponds to the Caption in the notion code block
 
@@ -98,3 +102,8 @@ The code block header in Docusaurus corresponds to the Caption in the notion cod
 - The unified directory structure is lowercase
 - Improve README.
 - Support code block title
+- 
+## Release 0.1.9 2023-12-14
+- bugfix
+- Suppport [MDX and React](https://docusaurus.io/docs/markdown-features/react)
+- Suppport [Admonitions](https://docusaurus.io/docs/markdown-features/admonitions)

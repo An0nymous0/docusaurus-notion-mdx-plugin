@@ -1,11 +1,13 @@
 import {generateMDXContent} from './blocksToMDXRenderer'
 import type {LoadContext, Plugin} from '@docusaurus/types';
 // @ts-ignore
-import type {PluginOptions, Options} from './options';
+import type {PluginOptions} from './options';
 
 const fs = require("fs")
 const path = require("path")
 import {initializeClient, fetchBlockChildren, fetchDatabase} from './notionClient.js';
+import {mkdirSyncRecursive} from "./fileUtils";
+import {PageObjectResponse} from "@notionhq/client/build/src/api-endpoints";
 
 export default function pluginDocusaurusNotionMDXPlugin(
     // @ts-ignore
@@ -16,8 +18,7 @@ export default function pluginDocusaurusNotionMDXPlugin(
         name: "docusaurus-notion-mdx-plugin",
         async loadContent() {
         },
-        //@ts-ignore
-        async contentLoaded({content, actions}) {
+        async contentLoaded({}) {
             initializeClient(options.notionAuth)
             // const notion = new Client({ auth: options.notionAuth })
             // Get pages from Notion
@@ -58,7 +59,6 @@ export default function pluginDocusaurusNotionMDXPlugin(
                             // const docsDir = path.join(getProjectRoot(), "docs", ...pageDocsPath?pageDocsPath.split("/"):"/")
 
                             mkdirSyncRecursive(docsDir);
-                            // const pageTitle = getPageTitle(page)
                             const filename = pageId + ".mdx"
                             const fileContent = await generateMDXContent(blockContent)
                             // console.log(fileContent)
@@ -72,7 +72,7 @@ export default function pluginDocusaurusNotionMDXPlugin(
                         }
                     }
                 }
-                updatePluginLastSyncTime(content, actions)
+                updatePluginLastSyncTime()
             }
             console.log("docusaurus-notion-mdx-plugin Generates count[" + database.length + "]==============")
         }
@@ -82,27 +82,29 @@ export default function pluginDocusaurusNotionMDXPlugin(
 
 
 // @ts-ignore
-function getPageTitle(page) {
+function getPageTitle(page:PageObjectResponse) {
     let title = '';
-    //@ts-ignore
-    page.properties.Name.title.forEach(titlePart => {
-        title += titlePart.plain_text;
-    });
+    let properties= page.properties['Name'];
+    if(properties.type === 'title'){
+        properties.title.forEach(titlePart => {
+            title += titlePart.plain_text;
+        });
+    }
     return title.trim();
 }
 
-//@ts-ignore
-function getPageShortTitle(page) {
+function getPageShortTitle(page:PageObjectResponse) {
     let title = '';
-    //@ts-ignore
-    page.properties["DN - Short title"].rich_text.forEach(titlePart => {
-        title += titlePart.plain_text;
-    });
+    let properties= page.properties["DN - Short title"];
+    if(properties.type ==='rich_text'){
+        properties.rich_text.forEach(titlePart => {
+            title += titlePart.plain_text;
+        });
+    }
     return title.trim();
 }
 
-//@ts-ignore
-function updatePluginLastSyncTime(content, actions) {
+function updatePluginLastSyncTime() {
     // Gets the path to the configuration file
     const configPath = path.resolve(getProjectRoot(), 'docusaurus.config.js')
 
@@ -119,22 +121,13 @@ function updatePluginLastSyncTime(content, actions) {
     fs.writeFileSync(configPath, configCode)
 }
 
-//@ts-ignore
-function mkdirSyncRecursive(filename) {
-    const parts = filename.split(path.sep);
-    for (let i = 1; i <= parts.length; i++) {
-        if (parts[i - 1] === '') continue
-        const segment = parts.slice(0, i).join(path.sep);
-        if (!fs.existsSync(segment)) {
-            fs.mkdirSync(segment);
-        }
-    }
-}
-
-//@ts-ignore
-function getFrontMatter(page) {
+function getFrontMatter(page:PageObjectResponse) {
     // Handling Tags
-    const tags = page.properties["DN - Tags"].multi_select;
+    let tags:any[] = [];
+    let tagsProp = page.properties["DN - Tags"]
+    if(tagsProp.type==='multi_select'){
+        tags = tagsProp.multi_select;
+    }
     // @ts-ignore
     const tagNames = tags.map(t => `${t.name}`);
     // Output label

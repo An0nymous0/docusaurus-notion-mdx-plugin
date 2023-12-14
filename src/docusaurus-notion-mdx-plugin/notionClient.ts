@@ -22,8 +22,7 @@ export async function fetchBlockChildren(param:ListBlockChildrenParameters): Pro
     const response = await notion.blocks.children.list(param);
 
     return response.results;
-  } catch (error) {
-    //@ts-ignore
+  } catch (error:any) {
     if (error.code === APIErrorCode.ObjectNotFound) {
       throw new Error(`Block ${param.block_id} not found`);
     }
@@ -40,8 +39,7 @@ export async function fetchDatabase(param:QueryDatabaseParameters): Promise<Quer
     const response = await notion.databases.query(param)
 
     return response.results;
-  } catch (error) {
-    //@ts-ignore
+  } catch (error:any) {
     if (error.code === APIErrorCode.ObjectNotFound) {
       throw new Error(`Database ${param.database_id} not found`);
     }
